@@ -1,6 +1,6 @@
 
 
-## 1.1git初始化
+## 1.1 git初始化
 
 ```javascript
 git init
@@ -8,7 +8,7 @@ git init
 
 
 
-## 1.2git设计签名
+## 1.2 git设计签名
 
 项目级别/仓库级别：仅在当前本地库范围有效
 
@@ -28,13 +28,13 @@ git config --global user.email xx@xx.com
 git ~/.gitconfig
 ```
 
-## 1.3查看状态
+## 1.3 查看状态
 
 ```javascript
 git stutas
 ```
 
-## 1.4提交文件到暂存区
+## 1.4 本地文件提交到暂存区
 
 ```javascript
 //提交单个文件
@@ -44,7 +44,7 @@ git add [文件名]
 git add .
 ```
 
-##1.5暂存区提交到本地版本库
+##1.5 暂存区提交到本地版本库
 
 ```javascript
 git commit -m '注释' [文件名]
@@ -52,7 +52,7 @@ git commit -m '注释' [文件名]
 git commit -m '注释'
 ```
 
-## 1.6查看历史记录
+## 1.6 查看历史记录
 
 ```javascript
 1 git log
@@ -178,5 +178,11 @@ git push -u origin master
 
 ```javascript
 git pull
+```
+
+## 2.2  clone克隆项目
+
+```javascript
+git clone [仓库远程地址]
 ```
 
