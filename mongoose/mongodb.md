@@ -195,6 +195,7 @@ User.find({ userName: 'admin' }, function(err, ret) {
 删除：
 
 ```javascript
+//根据条件删除所有
 User.remove({ userName: 'admin' }, function(err, ret) {
     if (err) {
         console.log(err)
@@ -202,6 +203,13 @@ User.remove({ userName: 'admin' }, function(err, ret) {
         console.log(ret)
     }
 })
+
+//根据条件删除一个
+Model.findOneAndRemove(conditions,[option],[callback])
+
+//根据id 删除一个
+Model.findByIdAndRemove(id,[option],[callback])
+
 ```
 
 更新
