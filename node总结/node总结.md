@@ -498,5 +498,81 @@ exports.delect = function () {
 }
 ```
 
+## 8 Promise
+
+回调地狱 callback hell
+
+无法保证顺序：
+
+```javascript
+var fs = require('fs')
+
+fs.readFile('./data/a.text','utf8',function(err,data){
+    if(err){
+        //抛出异常：
+        //    1. 阻止程序的执行
+        //    2. 把信息消息打印到控制台
+        throw err
+    }
+    console.log(data)
+})
+
+fs.readFile('./data/b.text','utf8',function(err,data){
+    if(err){
+        //抛出异常：
+        //    1. 阻止程序的执行
+        //    2. 把信息消息打印到控制台
+        throw err
+    }
+    console.log(data)
+})
+
+fs.readFile('./data/c.text','utf8',function(err,data){
+    if(err){
+        //抛出异常：
+        //    1. 阻止程序的执行
+        //    2. 把信息消息打印到控制台
+        throw err
+    }
+    console.log(data)
+})
+```
+
+通过回调嵌套的方式来保证顺序：
+
+```javascript
+var fs = require('fs')
+
+fs.readFile('./data/a.text','utf8',function(err,data){
+    if(err){
+        //抛出异常：
+        //    1. 阻止程序的执行
+        //    2. 把信息消息打印到控制台
+        throw err
+    }
+    console.log(data)
+	fs.readFile('./data/b.text','utf8',function(err,data){
+    	if(err){
+        	//抛出异常：
+        	//    1. 阻止程序的执行
+        	//    2. 把信息消息打印到控制台
+        	throw err
+    	}
+    	console.log(data)
+        fs.readFile('./data/c.text','utf8',function(err,data){
+    		if(err){
+        		//抛出异常：
+        		//    1. 阻止程序的执行
+        		//    2. 把信息消息打印到控制台
+        		throw err
+    		}
+    		console.log(data)
+		})
+	})
+})
+```
+
+为了解决以上编码方式带来的问题（回调地狱嵌套），所以在ES6中新增一个API:`promise`
+
 
 

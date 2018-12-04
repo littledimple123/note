@@ -1,4 +1,4 @@
-## 1.MongoDB
+##  1.MongoDB
 
 #### 1.1安装
 
@@ -49,7 +49,7 @@ exit
   - 切换到指定的数据（如果没有会新建）
 - `db` 显示当前数据库
 - `db.student.insert({"name":"jack"})`  student 是数据集合  
-- `show collenctions`  显示表集合
+- `show collections`  显示表集合
 - `db.student.find()`  查询数据
 
 #### 1.5在Node中如何操作MongoDB数据
