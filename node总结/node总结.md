@@ -574,5 +574,223 @@ fs.readFile('./data/a.text','utf8',function(err,data){
 
 为了解决以上编码方式带来的问题（回调地狱嵌套），所以在ES6中新增一个API:`promise`
 
+promise是一个构造函数(本身不是异步，但是内部往往都是封装一个异步)
 
+```javascript
+var fs = require('fs')
+
+//创建Promise 容器
+var p1 = new Promise(function(resolve, reject) {
+    fs.readFile('a.txt', 'utf8', function(err, data) {
+        if (err) {
+            //失败调用reject 往下传递参数，且只接受一个参数
+            reject(err)
+        } else {
+            //成功调用resolve 往下传递参数，且只接受一个参数
+            resolve(data)
+        }
+    })
+})
+
+var p2 = new Promise(function(resolve, reject) {
+    fs.readFile('b.txt', 'utf8', function(err, data) {
+        if (err) {
+            //承诺失败容器中任务失败了
+            //把容器的Pending的状态变为 Rejected
+            reject(err)
+        } else {
+            //承诺容器中任务成功了
+            //把容器的Pending的状态变为成功 Resolve
+            resolve(data)
+        }
+    })
+})
+
+var p3 = new Promise(function(resolve, reject) {
+    fs.readFile('c.txt', 'utf8', function(err, data) {
+        if (err) {
+            //承诺失败容器中任务失败了
+            //把容器的Pending的状态变为 Rejected
+            reject(err)
+        } else {
+            //承诺容器中任务成功了
+            //把容器的Pending的状态变为成功 Resolve
+            resolve(data)
+        }
+    })
+})
+
+p1
+    .then(function(data) {
+        console.log(data)
+            //当p1读取成功的时候，return 一个Promise 对象的时候，后续的 then 中的方法的第一个参数会作为 P2 的 resolve
+        return p2
+    }, function(err) {
+        console.log("读取失败" + err)
+    })
+    .then(function(data) {
+        console.log(data)
+        return p3
+    })
+
+
+//封装promise-API 
+var fs = require('fs')
+function pReadFile(filepath){
+    return new Promise(function(resolve, reject){
+        fs.readFile(filepath,'utf8',function(err, data){
+            if(err){
+                reject(err)
+            }else{
+                resolve(data)
+            }
+        })
+    })
+}
+
+pReadFile('a.txt')
+ .then(function(data){
+    console.log(data)
+    return pReadFile('b.txt')
+}).then(function(data){
+    console.log(data)
+    return pReadFile('c.txt')
+})
+```
+
+##### 每次调用then都会返回一个新创建的Promise对象，不管是then还是catch方法调用，都返回一个新的Promise
+
+Promise.catch()方法是promise.then(undefined,onRejected)方法的一个别名，该方法用来注册当promise对象状态变为Rejected的回调函数。 
+
+```javascript
+var promise = Promise.reject(new Error("失败"))
+promise.catch(function(error){
+    console.log(error)
+})
+```
+
+```javascript
+var promise = new Promise(function(resolve){
+    resolve(1)
+})
+promise.then(function(value){
+	return value*2	
+})
+promise.then(function(value){
+    return value*2
+})
+promise.then(function(value){
+    console.log('1'+value)
+})
+
+//打印输出 11  因为每次调用then方法时，使用不同的promise对象，
+```
+
+##### 使用方法链的then，多个then方法连接在一起，函数严格执行resolve--then--then--then的顺序执行，并且传递每个then方法的value的值都是前一个promise对象中return的值
+
+```javascript
+var promise = new Promise(function(resolve){
+    resolve(1)
+})
+promise.then(function(value){
+	return value*2	
+}).then(function(value){
+    return value*2
+}).then(function(value){
+    console.log('1'+value)
+})
+
+//打印输出 '1'+ 1*2*2 = 15
+```
+
+##### 延伸jquery中的promise
+
+```javascript
+var ajaxPromise = new Promise(function(resolve, reject){
+    resolve()
+})
+
+ajaxPromise.then(function(){
+    $.ajax({
+        url:'',
+        dataType:'json',
+        success:function(data){
+            
+        }
+    })
+}).then(function(){
+    $.ajax({
+        url:'',
+        dataType:'json',
+        success:function(data){
+            
+        }
+    })
+})
+```
+
+##### Promise.all
+
+Promise.all可以接受一个元素为Promise对象的数组作为参数，当这个数组里面所有的promise对象都变为resolve时，该方法才会返回。 
+
+```javascript
+var promise1 = new Promise(function(resolve, reject){
+    setTimeout(function(){
+        resolve(1)
+    },3000)
+})
+
+var promise2 = new Promise(function(resolve, reject){
+    setTimeout(function(){
+        resolve(2)
+    },1000)
+})
+
+Promise.all([promise1, promise2]).then(function(data){
+    console.log(data)
+})
+
+//打印结果[1,2]  promise1对象中的setTimeout是3秒的时间，而promise2对象中的setTimeout是1秒的时间，但是在Promise.all方法中会按照数组的原先顺序将结果返回；
+```
+
+##### Promise race
+
+promise.race只要有一个promise对象进入FullFilled或者Rejected状态的话，程序就会停止，且会继续后面的处理逻辑
+
+```javascript
+//场景一
+function timerPromise(delay) {
+    return new Promise(function(resolve) {
+        setTimeout(() => {
+            resolve(delay)
+        }, delay);
+    })
+}
+
+//任何一个promise变成resolve或reject的话程序停止执行
+Promise.race([timerPromise(1), timerPromise(32), timerPromise(64)]).then(function(value) {
+    console.log(value)   //输出1
+})
+
+//场景二
+var rpromise1 = new Promise(function(resolve, reject) {
+    setTimeout(function() {
+        console.log(1)
+        resolve(2)
+    }, 300)
+})
+
+var rpromise2 = new Promise(function(resolve, reject) {
+    setTimeout(function() {
+        console.log(3)
+        resolve(4)
+    }, 1000)
+})
+
+//这种情况下，当一个promise对象变为(FulFilled)成功状态的时候，后面的promise对象并没有停止运行
+Promise.race([rpromise1, rpromise2]).then(function(value) {
+    console.log(value) //输出 1 2 3
+})
+
+```
 
