@@ -216,6 +216,7 @@ var app = express()
 // 只要这样做了，你就可以直接通过 /public/xx 的方式访问 public 目录中的所有资源了
 app.use('/public/', express.static('./public/'))
 app.use('/static/', express.static('./static/'))
+//app.use('/static/', express.static(path.join(__dirname,'./static/')))  //把相对路径变成绝对路径
 
 // 模板引擎，在 Express 也是一个 API 的事儿
 
@@ -391,7 +392,42 @@ app.use(function (req, res) {
 })
 ```
 
-## 6、node中时间插件
+#### 5.9 path路径操作模块
+
++ path.basename  获取路径的文件名包括扩展名
+
++ path.dirname    获取路径中目录部分
+
++ path.extname    获取路径中扩展名
+
++ path.parse          把路径转为对象
+
+  ​                                 root    跟路径
+
+  ​                                 dir      目录
+
+  ​                                 base   包含后缀名的文件名
+
+  ​                                 ext      后缀名
+
+  ​                                 name   不包括后缀名的文件名
+
++ path.join    需要路径拼接
+
++ path.isAbsolute   是否绝对路径
+
+##6、node中的其他成员
+
+在每个模块中，除了`require`  `exports`  等模块相关API之外，还有两个特殊的成员：
+
++ `__dirname`  **动态获取**当前文件模块所属目录的绝对路径
++ `__filename`  **动态获取**当前文件的绝对路径
+
+在文件操作中，使用相对路径是不可靠的，因为在node中文件操作的路径被设计为相对执行node命令所处的路径。（不是bug）使用`__dirname`  和 `__filename`  解决
+
+
+
+## 7、node中时间插件
 
 silly-datetime 时间插件
 
@@ -414,9 +450,9 @@ sd.fromNow(+new Date() - 2000);
 
 [silly-datetime链接文档](https://www.npmjs.com/package/silly-datetime)
 
-## 7、路由
+## 8、路由
 
-#### 7.1静态路由
+#### 8.1静态路由
 
 ```javascript
 var express = require('express')
@@ -426,7 +462,7 @@ app.use('/public/',express.static('./public'))
 app.listen(3000,function() {console.log('running......')})
 ```
 
-#### 7.2用Router 创建路由
+#### 8.2用Router 创建路由
 
 router.js
 
@@ -456,7 +492,7 @@ var router = require('./router')
 app.use(router)
 ```
 
-#### 7.3设计操作文件数据的API文件模块
+#### 8.3设计操作文件数据的API文件模块
 
 ```javascript
 /**
@@ -498,7 +534,7 @@ exports.delect = function () {
 }
 ```
 
-## 8 Promise
+## 9 Promise
 
 回调地狱 callback hell
 
