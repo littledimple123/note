@@ -346,10 +346,26 @@ app.get('/', function (req, res) {
 });
 ```
 
-如果希望修改默认的`views`试图渲染存储目录
+如果希望修改默认的`views` 示图渲染存储目录
 
 ```javascript
 app.set('views',目录路径)
+```
+
+**模板继承和子模板**
+
+模板继承
+
+```javascript
+{{extend './layout.html'}}
+{{block 'head'}} {{/block}}
+```
+
+子模板
+
+```javascript
+{{include './header.html'}}
+{{block 'head'}} {{/block}}
 ```
 
 #### 5.7在express获取表单get请求体数据
@@ -424,8 +440,6 @@ app.use(function (req, res) {
 + `__filename`  **动态获取**当前文件的绝对路径
 
 在文件操作中，使用相对路径是不可靠的，因为在node中文件操作的路径被设计为相对执行node命令所处的路径。（不是bug）使用`__dirname`  和 `__filename`  解决
-
-
 
 ## 7、node中时间插件
 

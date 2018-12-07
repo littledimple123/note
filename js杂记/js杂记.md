@@ -39,3 +39,33 @@ eg- json字符串:   var data = '{ "name": "dran", "sex": "man" }';
 })   //2
 ```
 
+#### 3、 jQery ajax    -serialize()方法
+
+serialize() 方法通过序列化表单值，创建 URL 编码文本字符串 。
+
+```javascript
+<html>
+<head>
+<script type="text/javascript" src="/jquery/jquery.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("button").click(function(){
+    $("div").text($("form").serialize());
+  });
+});
+</script>
+</head>
+<body>
+<form action="">
+First name: <input type="text" name="FirstName" value="Bill" /><br />
+Last name: <input type="text" name="LastName" value="Gates" /><br />
+</form>
+
+<button>序列化表单值</button>
+<div></div>
+</body>
+</html>
+
+```
+
+**注释: **   只会将”成功的控件“序列化为字符串。如果不使用按钮来提交表单，则不对提交按钮的值序列化。如果要表单元素的值包含到序列字符串中，元素必须使用 name 属性。 
