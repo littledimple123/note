@@ -6,8 +6,6 @@
 git init
 ```
 
-
-
 ## 1.2 git设计签名
 
 项目级别/仓库级别：仅在当前本地库范围有效
@@ -84,16 +82,12 @@ git commit -m '注释'
   git reset --hard [索引值]
   ```
 
-  
-
 + 使用^符号 （只能后退，不能前进）
 
   ```javascript
   //一个^表示后退一步，后退几步就写几个^
   git reset --hard HEAD^
   ```
-
-  
 
 + 使用~符号（只能后退，不能前进）
 
@@ -165,7 +159,6 @@ XXXXXXXXXX
   //origin是设置的别名，https://github.com/littledimple123/note.git 是被设置的地址
   ```
 
-  
 
 ## 2.0  push操作
 
