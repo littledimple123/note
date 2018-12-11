@@ -432,6 +432,12 @@ app.use(function (req, res) {
 
 + path.isAbsolute   是否绝对路径
 
+####5.10Express中的json
+
+Express提供了一个响应方法： json
+
+该方法接收一个对象作为参数，他会自动帮你把对象转为字符串在发送给浏览器
+
 ##6、node中的其他成员
 
 在每个模块中，除了`require`  `exports`  等模块相关API之外，还有两个特殊的成员：
@@ -843,4 +849,20 @@ Promise.race([rpromise1, rpromise2]).then(function(value) {
 })
 
 ```
+
+#### 10、在Express中配置使用express-session
+
+安装：
+
+```javascript
+npm i express-session
+```
+
+API
+
+```javascript
+var session = require('express-session')
+```
+
+
 
