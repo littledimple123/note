@@ -225,3 +225,8 @@ window.returnValue="http://...";
 </script> 
 ```
 
+#### 5、客户端异步提交（ajax），服务端重定向无效
+
+客户端需要写 `window.location.href='/'`
+
+服务端写`res.redircet('./')`无效

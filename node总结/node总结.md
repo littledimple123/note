@@ -438,6 +438,99 @@ Express提供了一个响应方法： json
 
 该方法接收一个对象作为参数，他会自动帮你把对象转为字符串在发送给浏览器
 
+#### 5.11Express中的express-session
+
+安装：
+
+```javascript
+npm i express-session
+```
+
+配置：
+
+```javascript
+app.use(session({
+    secret: 'keyboard cat',   //配置加密字符串，他会在原有的加密基础之上和这个字符串拼起来去加密，目的增加安全性，防止客户端恶意伪造
+    resave: false,
+    saveUninitialized: true    //true的话无论是否使用session，都默认直接分配一把钥匙
+}))
+```
+
+使用：
+
+```javascript
+//添加session数据
+req.session.foo='bar'
+//获取session数据
+req.session.foo
+```
+
+提示：默认session数据是内存存储的，服务器一旦重启就会丢失，真正的生产环境会把session进行持久化存储
+
+持久化存储把session存入Resis中
+
+connect-reids　 是一个 Redis 版的 session　存储器，使用node_redis作为驱动。借助它即可在Express中启用Redis来持久化你的Session 
+
+```javascript
+//安装
+npm i connect-redis
+```
+
+参数配置：
+
+```ja
+client: 你可以复用现有的redis客户端对象， 由redis.createClient() 创建
+
+host: Redis服务器名
+
+port: Redis服务器端口
+
+socket: Redis服务器的unix_socket
+
+ttl: Redis session TTL 过期时间 （秒）
+
+disableTTL: 禁用设置的 TTL
+
+db: 使用第几个数据库
+
+pass: Redis数据库的密码
+
+prefix: 数据表前辍即schema, 默认为 "sess:"
+```
+
+使用：
+
+```javascript
+// 将 express-session 传给 connect-redis 来启用
+// 引入相关模块：
+var session = require('express-session');  
+var redis = require('redis');  
+var RedisStore = require('connect-redis')(session);
+
+
+// 创建Redis客户端
+var redisClient = redis.createClient(6379, '127.0.0.1', {auth_pass: 'password'});
+
+
+// 设置 Express 的 Session 存储中间件
+app.use(session({  
+    store:new RedisStore({client: redisClient}),
+    secret: 'password',
+    resave: false,
+    saveUninitialized: false
+}))
+
+// 测试
+app.use(function (req, res, next) {  
+  if (!req.session) {
+    return next(new Error('error'))
+  }
+  next()
+})
+```
+
+
+
 ##6、node中的其他成员
 
 在每个模块中，除了`require`  `exports`  等模块相关API之外，还有两个特殊的成员：
