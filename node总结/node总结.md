@@ -310,7 +310,7 @@ app.post('/',function(req, res) {
 ```javascript
 1 app.use('/public/',express.static('./public/'))    //去public目录下找对应的文件，浏览器访问localhost:3000/public/login.html
 或者
-2 app.use('/public/',express.static('./public/'))    //省略第一个参数，在浏览器中访问localhost:3000/login.html
+2 app.use('',express.static('./public/'))    //省略第一个参数，在浏览器中访问localhost:3000/login.html
 或者
 3 app.use('/a/',express.static('./public/'))        //必须是/a/public目录中的文件，a相当于public的别名    在浏览器中访问   localhost:3000/a/login.html
 ```
@@ -432,6 +432,31 @@ app.use(function (req, res) {
 
 + path.isAbsolute   是否绝对路径
 
+```javascript
+//url.parse方法使用说明
+url.parse(urlStr, [parseQueryString], [slashesDenoteHost])
+
+
+接收参数：
+
+urlStr url字符串
+
+parseQueryString 为true时将使用查询模块分析查询字符串，默认为false
+
+slashesDenoteHost
+
+默认为false，//foo/bar 形式的字符串将被解释成 { pathname: ‘//foo/bar' }
+
+如果设置成true，//foo/bar 形式的字符串将被解释成 { host: ‘foo', pathname: ‘/bar' }
+
+var url = require('url');
+var a = url.parse('http://example.com:8080/one?a=index&t=article&m=default',true);
+console.log(a);
+
+```
+
+
+
 ####5.10Express中的json
 
 Express提供了一个响应方法： json
@@ -539,6 +564,22 @@ app.use(function (req, res, next) {
 + `__filename`  **动态获取**当前文件的绝对路径
 
 在文件操作中，使用相对路径是不可靠的，因为在node中文件操作的路径被设计为相对执行node命令所处的路径。（不是bug）使用`__dirname`  和 `__filename`  解决
+
+```javascript
+var fs = require('fs')
+var path = require('path')
+fs.readFile(path.join(__dirname,'./00-文件路径.js'),function(err, data){
+    if(err){
+        throw err
+    }
+    console.log(data.toString())
+})
+```
+
+```javascript
+//nodejs + express访问静态资源
+app.use('/node_modules', express.static(path.join(__dirname, "./node_modules")))
+```
 
 ## 7、node中时间插件
 
@@ -943,18 +984,10 @@ Promise.race([rpromise1, rpromise2]).then(function(value) {
 
 ```
 
-#### 10、在Express中配置使用express-session
-
-安装：
+##10、中间件
 
 ```javascript
-npm i express-session
-```
 
-API
-
-```javascript
-var session = require('express-session')
 ```
 
 
