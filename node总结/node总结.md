@@ -986,9 +986,61 @@ Promise.race([rpromise1, rpromise2]).then(function(value) {
 
 ##10、中间件
 
+ 在 Express 中，对中间件有几种分类
+
+当请求进来，会从第一个中间件开始进行匹配
+
+​    如果匹配，则进来
+
+​       如果请求进入中间件之后，没有调用 next 则代码会停在当前中间件
+       如果调用了 next 则继续向后找到第一个匹配的中间件
+       如果不匹配，则继续判断匹配下一个中间件
+
 ```javascript
+var express = require('express')
+var app = express()
+app.use(function (req, res, next) {
+   console.log('1')
+   next()
+ })
+app.use('/a',function (req, res, next) {
+   console.log('2')   
+ })
+app.use('/b',function (req, res, next) {
+   console.log('3')   
+ })
+app.listen(3000, function () {
+  console.log('app is running at port 3000.')
+})
+
+//当访问 http://localhost:3000/a   输出2
+//当访问 http://localhost:3000/b   输出3
 
 ```
 
+调用next的时候，如果传递了参数，则直接往后找到带有 四个参数的应用程序级别中间件
 
+当发生错误的时候，我们可以调用 next 传递错误对象
+
+然后就会被全局错误处理中间件匹配到并处理之
+
+```javascript
+var express = require('express')
+var fs = require('fs')
+var app = express()
+app.get('/',function(req,res,next){
+    fs.readFile('./a.txt',function(err, data){
+        if(err){
+            next(err)
+        }
+    })
+})
+// 配置错误处理中间件  一定放在最后，路由挂载app之后
+app.use(function (err, req, res, next) {
+  res.status(500).send(err.message)
+})
+app.listen(3000,function(){
+    console.log('server is running...')
+})
+```
 
