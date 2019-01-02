@@ -312,7 +312,7 @@ module.exports = {
 
    #### 5. loader
 
-   webpack只支持js，要解析css需要配置loader
+   webpack只支持js，要解析css需要配置loader，配置完加在style标签中
 
    安装：
 
@@ -393,5 +393,345 @@ index.js
 ```javascript
 import './index.css'
 import './style.less'
+```
+
+抽离样式，抽离到css文件，通过css文件引入
+
+插件：extract-text-webpack-plugin@next       mini-css-extract-plugin（不能分别抽离，只能抽离成一个文件）
+
+extract-text-webpack-plugin    webpack3.0使用
+
+extract-text-webpack-plugin@next    webpack4.0使用
+
+安装
+
+```javascript
+npm i extract-text-webpack-plugin@next mini-css-extract-plugin -D
+```
+
+extract-text-webpack-plugin@next  插件配置webpack.config.js：
+
+```javascript
+//把css,less等打包到一个css文件中
+
+let path = require('path')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+let CleanWebpackPlugin = require('clean-webpack-plugin')
+let webpack = require('webpack')
+//1. 引入插件
+let ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+module.exports = {
+    entry: './src/index.js', //入口
+    output: {
+        filename: 'build[hash:8].js', //修改打包文件名
+        path: path.resolve('./build') //修改打包文件夹的名字,这个路径必须是绝对路径
+    }, //出口
+    devServer: {
+        contentBase: './build',
+        port: 5000,
+        compress: true, //服务器压缩
+        hot: true,
+        open: true //自动打开浏览器
+    }, //开发服务器
+    module: {
+        //2. 配置插件
+        rules: [{
+                test: /\.css$/,
+                use: ExtractTextWebpackPlugin.extract({
+                    use: [{
+                        loader: 'css-loader'
+                    }]
+                })
+            },
+            {
+                test: /\.less$/,
+                use: ExtractTextWebpackPlugin.extract({
+                    use: [{
+                            loader: 'css-loader'
+                        },
+                        {
+                            loader: 'less-loader'
+                        }
+                    ]
+                })
+            }
+        ]
+    }, //模块设置
+    plugins: [
+        //3. 配置抽离css样式插件
+        new ExtractTextWebpackPlugin({
+            filename: 'css/index.css'
+        }),
+        //热更新
+        new webpack.HotModuleReplacementPlugin(),
+        //清空生产的文件夹 清除多个可以是数组        
+        new CleanWebpackPlugin(['./build']),
+        //打包html文件
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            title: '首页练习',
+            hash: true //清缓存
+                // minify: {
+                //     removeAttributeQuotes: true, //去掉双引号
+                //     collapseWhitespace: true //折叠一行
+
+            // }
+
+        })
+    ], //插件配置
+    mode: 'development', //可以更改模式 'development' 和'production'
+    resolve: {} //配置解析
+
+}
+```
+
+```javascript
+//将css，less等分别打包到对应的样式文件
+
+let path = require('path')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+let CleanWebpackPlugin = require('clean-webpack-plugin')
+let webpack = require('webpack')
+//1. 引插件，new实例
+let ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+let lessExtract = new ExtractTextWebpackPlugin('css/less.css')
+let cssExtract = new ExtractTextWebpackPlugin('css/css.css')
+module.exports = {
+    entry: './src/index.js', //入口
+    output: {
+        filename: 'build[hash:8].js', //修改打包文件名
+        path: path.resolve('./build') //修改打包文件夹的名字,这个路径必须是绝对路径
+    }, //出口
+    devServer: {
+        contentBase: './build',
+        port: 5000,
+        compress: true, //服务器压缩
+        hot: true,
+        open: true //自动打开浏览器
+    }, //开发服务器
+    module: {
+        //2. 配置插件
+        rules: [{
+                test: /\.css$/,
+                use: cssExtract.extract({
+                    use: [{
+                        loader: 'css-loader'
+                    }]
+                })
+            },
+            {
+                test: /\.less$/,
+                use: lessExtract.extract({
+                    use: [{
+                            loader: 'css-loader'
+                        },
+                        {
+                            loader: 'less-loader'
+                        }
+                    ]
+                })
+            }
+        ]
+    }, //模块设置
+    plugins: [
+        //3. 抽离css样式
+        lessExtract,
+        cssExtract,
+        //热更新
+        new webpack.HotModuleReplacementPlugin(),
+        //清空生产的文件夹 清除多个可以是数组        
+        new CleanWebpackPlugin(['./build']),
+        //打包html文件
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            title: '首页练习',
+            hash: true //清缓存
+                // minify: {
+                //     removeAttributeQuotes: true, //去掉双引号
+                //     collapseWhitespace: true //折叠一行
+
+            // }
+
+        })
+    ], //插件配置
+    mode: 'development', //可以更改模式 'development' 和'production'
+    resolve: {} //配置解析
+
+}
+
+//以上设置有一个问题，就是分别把css，less打包，通过link标签引入，任意修改之后不能实现热刷新。还得强制刷新。在开发过程中可以通过把css，less打包成style标签中实现热刷新，等项目上线了，再换成link标签
+let path = require('path')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+let CleanWebpackPlugin = require('clean-webpack-plugin')
+let webpack = require('webpack')
+    //let MiniCssEtractPlugin = require('mini-css-extract-plugin')
+let ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+//1. 实例化并传入参数
+let lessExtract = new ExtractTextWebpackPlugin({
+    filename: 'css/less.css',
+    disable: true
+})
+let cssExtract = new ExtractTextWebpackPlugin({
+    filename: 'css/css.css',
+    disable: true
+})
+module.exports = {
+    entry: './src/index.js', //入口
+    output: {
+        filename: 'build[hash:8].js', //修改打包文件名
+        path: path.resolve('./build') //修改打包文件夹的名字,这个路径必须是绝对路径
+    }, //出口
+    devServer: {
+        contentBase: './build',
+        port: 5000,
+        compress: true, //服务器压缩
+        hot: true,
+        open: true //自动打开浏览器
+    }, //开发服务器
+    module: {
+        //2. 配置，增加fallback: 'style-loader',
+        rules: [{
+                    test: /\.css$/,
+                    use: cssExtract.extract({
+                        fallback: 'style-loader',
+                        use: [{
+                            loader: 'css-loader'
+                        }]
+                    })
+                },
+                {
+                    test: /\.less$/,
+                    use: lessExtract.extract({
+                        fallback: 'style-loader',
+                        use: [{
+                                loader: 'css-loader'
+                            },
+                            {
+                                loader: 'less-loader'
+                            }
+                        ]
+                    })
+                }
+            ]
+            
+    }, //模块设置
+    plugins: [
+        //3. 抽离css样式
+        lessExtract,
+        cssExtract,        
+        //热更新
+        new webpack.HotModuleReplacementPlugin(),
+        //清空生产的文件夹 清除多个可以是数组        
+        new CleanWebpackPlugin(['./build']),
+        //打包html文件
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            title: '首页练习',
+            hash: true //清缓存
+                // minify: {
+                //     removeAttributeQuotes: true, //去掉双引号
+                //     collapseWhitespace: true //折叠一行
+
+            // }
+
+        })
+    ], //插件配置
+    mode: 'development', //可以更改模式 'development' 和'production'
+    resolve: {} //配置解析
+
+}
+```
+
+  mini-css-extract-plugin 插件配置webpack.config.js
+
+```javascript                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+let path = require('path')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+let CleanWebpackPlugin = require('clean-webpack-plugin')
+let webpack = require('webpack')
+//1. 引插件
+let MiniCssEtractPlugin = require('mini-css-extract-plugin')   
+module.exports = {
+    entry: './src/index.js', //入口
+    output: {
+        filename: 'build[hash:8].js', //修改打包文件名
+        path: path.resolve('./build') //修改打包文件夹的名字,这个路径必须是绝对路径
+    }, //出口
+    devServer: {
+        contentBase: './build',
+        port: 5000,
+        compress: true, //服务器压缩
+        hot: true,
+        open: true //自动打开浏览器
+    }, //开发服务器
+    module: { 
+        //2. 配置
+        rules: [{
+                test: /\.css$/,
+                use: [
+                    MiniCssEtractPlugin.loader,
+                    {
+                        loader: 'css-loader'
+                    }
+                ]
+
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    MiniCssEtractPlugin.loader,
+                    {
+                        loader: 'css-loader'
+                    },
+                    {
+                        loader: 'less-loader'
+                    }
+                ]
+
+            }
+        ]
+    }, //模块设置
+    plugins: [
+        //3. 抽离css样式        
+        new MiniCssEtractPlugin({
+            filename: 'css/index.css'
+        }),
+        //热更新
+        new webpack.HotModuleReplacementPlugin(),
+        //清空生产的文件夹 清除多个可以是数组        
+        new CleanWebpackPlugin(['./build']),
+        //打包html文件
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            title: '首页练习',
+            hash: true //清缓存
+                // minify: {
+                //     removeAttributeQuotes: true, //去掉双引号
+                //     collapseWhitespace: true //折叠一行
+
+            // }
+
+        })
+    ], //插件配置
+    mode: 'development', //可以更改模式 'development' 和'production'
+    resolve: {} //配置解析
+
+}
+```
+
+去掉css中冗余的样式代码：
+
+插件   purifycss-webpack 
+
+安装：purifycss-webpack插件内置会调用purify-css插件
+
+```javascript
+npm i purifycss-webpack purify-css glob -D
+```
+
+webpack.config.js配置
+
+```javascript
+
 ```
 
