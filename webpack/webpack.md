@@ -24,6 +24,14 @@ npm i webpack webpack-cli -D
 npx webpack 
 ```
 
+安装webpack-dev-server
+
+```javascript
+npm i webpack-dev-server
+```
+
+webpack-dev-server打包好的main.js是托管到内存中，所以在跟目录中看不到，
+
 4、webpack配置文件
 
 最基本的配置webpack.config.js
@@ -31,7 +39,7 @@ npx webpack
 ```javascript
 let path = require('path')
 module.exports = {
-    entry: './src/index.js', //入口，可以是字符串，数组，对象
+    entry: './src/index.js', //入口，可以是字符串，数组，对象  webpack4.x提供了约定大于配置的概念：默认的打包入口路径是src->index.js
     output: {
         filename: 'build[hash:8].js', //修改打包文件名  多文件出口写成  [name]build[hash:8 ].js
         path: path.resolve('./build') //修改打包文件夹的名字
@@ -43,7 +51,7 @@ module.exports = {
     }, //开发服务器
     module: {}, //模块设置
     plugins: [], //插件配置
-    mode: 'development', //可以更改模式
+    mode: 'development', //可以更改模式 'development' 和 'production'
     resolve: {} //配置解析
 
 }
@@ -261,7 +269,7 @@ module.exports = {
 运行命名： npm run start
 ```
 
-4. 及时更新
+4. 及时更新（热更新）
 
    配置webpack.config.js
 

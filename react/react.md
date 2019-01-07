@@ -30,17 +30,17 @@ npm init -y
 
 4、安装webpack
 
-```javascript
-npm i webpack webpack-cli -D   
-或者    
-cnpm i webpack webpack-cli -D
-```
-
-npm安装淘宝镜像
+5、npm安装淘宝镜像
 
 ```javascript
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
 
 ​全局运行`npm i cnpm -g`              
+
+#### 在项目中使用react
+
+1. 运行`npm i react react-dom -S`安装包
+   - react  专门用于创建组件和虚拟DOM的，同时组件的生命周期都在这个包中
+   - react-dom     专门进行DOM操作的，最主要的应用场景 就是 ReactDOM.render()
 
