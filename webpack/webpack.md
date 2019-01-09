@@ -89,7 +89,7 @@ scripts": {
 //然后就可以使用 npm run dev 和 npm run build 命令，即可分别打包为：开发环境的项目文件，和生产环境的项目文件
 
 //通常开发，都会使用 webpack-dev-server 插件， 这时运行 npm run des 进行开发更方便。
-  
+
 ```
 
 终端运行
@@ -151,7 +151,7 @@ module.exports = {
 运行命名： npm run start
 ```
 
-2. **CleanWebpackPlugin** 清空生产生成的文件（build）
+2.   清空生产生成的文件（build）
 
 安装
 

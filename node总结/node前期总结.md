@@ -71,3 +71,7 @@ add(10, 20, function (a) {
 
 往往异步API都伴随一个回调函数  setTimeout  readFile  writeFile  readdir ajax 
 
+**话题外**
+
+node_modules误删之后，通过`npm update` 恢复
+
