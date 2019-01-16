@@ -181,7 +181,7 @@ git clone [仓库远程地址]
 
 ### 2.3如何在git push之后删除node_modules和dist
 
-一定要养成在项目开始就创建.gitignore文件的习惯，否则一旦push，处理起来会非常麻烦。 
+**一定要养成在项目开始就创建.gitignore文件的习惯，否则一旦push，处理起来会非常麻烦。 **
 
 新建`.gitignore`文件
 
