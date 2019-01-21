@@ -277,6 +277,89 @@ class App extends Component {
             export default App
 ```
 
+axios api
+
+```javascript
+//新建axios api的js文件 RecordsAPI.js ,利用json-server模拟接口
+import axios from 'axios'
+const api = process.env.REACT_APP_RECORDS_API_URL || "http://localhost:4000"
+export const creat = (body) => axios.post(`${api}/record`, body)
+export const update = (id, body) => axios.post(`${api}/record/${id}`, body)
+```
+
+在用到该路径的js文件中如何使用
+
+```javascript
+import React, { Component } from 'react'
+//1.先引入RecordsAPI
+import * as RecordsAPI from './RecordsAPI'
+export default class RecordForm extends Component {
+    constructor(props) { 
+        super(props)
+        this.state = {
+            date: '',
+            title: '',
+            amount: '',
+            
+        }
+        
+    }
+    handleChange(e) { 
+        let name, obj;
+        name = e.target.name
+        this.setState((
+            obj = {},
+            obj["" + name] = e.target.value,
+            obj
+        ))
+    }
+    vaild() { 
+        
+        return this.state.date && this.state.title && this.state.amount
+    }
+    handleSubmit(e) {
+        e.preventDefault();
+        const data = {
+            date: this.state.date,
+            title: this.state.title,
+            amount:Number.parseInt(this.state.amount)
+        }
+        //2. 调用RecordsAPI.creat
+        RecordsAPI.creat(data).then(
+            response => { 
+                this.props.handleNewRecord(response.data)
+                this.setState({
+                    date: '',
+                    title: '',
+                    amount:''
+                })
+            }
+        ).catch(
+            error=>console.log(error.message)
+        )
+     }
+    render() {
+        return (
+            <form className='form-inline mb-3' onSubmit={this.handleSubmit.bind(this)}>
+                <div className='form-group mr-1'>
+                    <input type='text' className='form-control' onChange={this.handleChange.bind(this)} placeholder='Date' name='date' value={this.state.date}/>
+                </div>
+                <div className='form-group mr-1'>
+                <input type='text' className='form-control' onChange={this.handleChange.bind(this)} placeholder='Title' name='title' value={this.state.title}/>
+                </div>
+                <div className='form-group mr-1'>
+                    <input type='text' className='form-control' onChange={this.handleChange.bind(this)} placeholder='Amount' name='amount' value={this.state.amount}/>
+                </div>
+                <button type='submit' className='btn btn-primary' disabled={!this.vaild()}>Creat Record</button>
+            </form>        
+
+        )
+    }
+}
+```
+
+
+
 **注意**
 
 react生成的表单如果要重新渲染其中的value应该改变state才会重新渲染，所以要给input绑定onChange事件 
