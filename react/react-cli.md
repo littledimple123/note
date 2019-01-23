@@ -363,3 +363,63 @@ export default class RecordForm extends Component {
 **注意**
 
 react生成的表单如果要重新渲染其中的value应该改变state才会重新渲染，所以要给input绑定onChange事件 
+
+## react全家桶---Redux
+
+安装
+
+```javascript
+npm i redux -S
+```
+
+Store 有以下职责：
+
+- 维持应用的 state；
+- 提供 [`getState()`](https://www.redux.org.cn/docs/api/Store.html#getState) 方法获取 state；
+- 提供 [`dispatch(action)`](https://www.redux.org.cn/docs/api/Store.html#dispatch) 方法更新 state；
+- 通过 [`subscribe(listener)`](https://www.redux.org.cn/docs/api/Store.html#subscribe) 注册监听器;
+- 通过 [`subscribe(listener)`](https://www.redux.org.cn/docs/api/Store.html#subscribe) 返回的函数注销监听器。
+
+入口文件index.js
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+//1. 在入口文件中引入redux中的createStore变量 
+import { createStore } from 'redux'
+//2. 引入reducer
+import reducer from './reducers/counter'
+
+//3.创建store
+const store = createStore(reducer)
+// store.subscribe(()=>console.log('State update',store.getState()))
+// store.dispatch({
+//   type:'INCREASE'
+// })
+
+const render = () => { 
+  ReactDOM.render(
+    <App value={store.getState()} handleIncrease={
+      () => store.dispatch({ type: 'INCREASE' })
+    } handleDecrease={
+      () => store.dispatch({ type: 'DESCREASE' })
+    }/>,
+    document.getElementById('root')
+  );
+}
+
+render()
+
+store.subscribe(render)
+
+serviceWorker.unregister();
+```
+
+
+
+
+
+
+
