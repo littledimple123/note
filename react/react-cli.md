@@ -417,6 +417,49 @@ store.subscribe(render)
 serviceWorker.unregister();
 ```
 
+reducer文件
+
+```javascript
+const counter = (state = 0, action = {}) => {
+    switch (action.type) {
+        case 'INCREASE':
+            return state + 1
+        case 'DESCREASE':
+            return state - 1
+        default:
+            return state
+    }
+}
+export default counter;
+```
+
+app.js
+
+```javascript
+import React, { Component } from 'react';
+import PropTypes from 'prop-types'
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <h1 className='jumbotron-heading text-center'>{this.props.value}</h1>
+        <p className='text-center'>
+          <button onClick={this.props.handleIncrease} className='btn btn-primary mr-2'>Increase</button>
+          <button onClick={this.props.handleDecrease} className='btn btn-danger my-2'>Decrease</button>
+        </p>
+      </div>
+    );
+  }
+}
+
+App.propTypes= {
+  value: PropTypes.number.isRequired,
+  handleIncrease:PropTypes.func.isRequired
+}
+
+export default App;
+```
+
 
 
 
