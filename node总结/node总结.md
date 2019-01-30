@@ -6,6 +6,15 @@
 
 ​         shift+alt+2（分两屏）
 
+node运行命令
+
+```javascript
+node 文件名
+比如：node app.js
+```
+
+
+
 ## 2、node中CommonJs模块
 
 #### 2.1加载`require`
