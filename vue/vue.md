@@ -4,6 +4,16 @@
 
 + MVVM是Model-View-ViewModel的简写 
 
+  model : 代表数据模型，数据和业务逻辑都在model层中定义
+
+  View ： 代表UI视图，负责数据的展示
+
+  ViewModel : 负责监听Model中数据的改变并且控制视图的更新，处理用户交互操作
+
+  Model 和View 并无直接关联，而是通过ViewModel来进行联系的，Model 和 ViewModel 之间有点双向数据绑定的联系，因此当model中数据改变时会触发View层的刷新， View 中由于用户交互操作而改变的数据也会在Model中同步。
+
+  这种模式实现了Model和View 的数据自动同步，因此开发者只需要专注对数据的维护操作即可，而不需要自己操作dom 
+
 优点
 
 MVVM模式和MVC模式一样，主要目的是分离[视图](https://baike.baidu.com/item/%E8%A7%86%E5%9B%BE)（View）和模型（Model），有几大优点
@@ -147,8 +157,6 @@ v-on可以简写为  @
 
 eg: @click
 
-.once 表示执行一次
-
 ```javascript
 <!DOCTYPE html>
 <html>
@@ -181,3 +189,160 @@ new Vue({
 </html>
 ```
 
+**注意： 在vm实例中，如果想要获取data上的数据，或者想要调用methods中的方法，必须通过this. 数据属性名   或者  this. 方法名进行访问。这里的this ，这里的this ，就表示 new 出来的 vm 实例对象**
+
+##### 2.5 事件修饰符
+
+.stop  阻止冒泡     事件由里往外，给谁加.stop就只会触发哪个事件
+
+.prevent 阻止默认事件
+
+.capture  添加事件监听器时使用事件捕捉模式      事件由外往里一次执行
+
+.self  只当事件在该元素本身（比如不是子元素）触发时触发，里面的事件不触发
+
+.once 事件只执行一次
+
+事件修饰符可以多个一起用
+
+##### 2.6 v-model 双向数据绑定
+
+智能运用到表单元素中    input  select   checkbox textarea
+
+ 在data中多选框是一个空的数组 ,不可以是空字符串和空对象，
+
+单选框可以使空数组，空字符串，空对象 ，
+
+select可以是空数组也可以是空字符串也可以是空对象 
+
+##### 2.7 样式问题
+
+**class**
+
+1。 通过v-bind 数据绑定，直接传一个数据，英文逗号隔开,
+
+```javascript
+<h1 :class=['active','thin']> 这是一个H1 </h1>
+```
+
+2。数组中使用三元表达式
+
+```javascript
+<h1 :class=['active','thin',isactive?'active':'']> 这是一个H1 </h1>
+```
+
+3。数组中嵌套对象
+
+```javascript
+<h1 :class=['active','thin',{'active':isactive}]> 这是一个H1 </h1>
+```
+
+4。直接使用对象，属性名不加引号也可以。如果属性中有-，必须加引号
+
+```javascript
+<h1 :class={'red':true，'font-size':true}> 这是一个H1 </h1>
+```
+
+**内联样式**
+
+通过"data"中属性
+
+```javascript
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Hello World</title>
+<script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">  
+  <div v-bind:style="[isshow?isblock:notblock]">111222333444555666</div>
+</div>
+	
+<script>
+new Vue({
+	el: '#app',	
+  data:{
+  	isblock:{
+      display:'block'
+    },
+    notblock:{
+      display:'none'
+    },
+    isshow:true
+  }
+});
+
+</script>
+</body>
+</html>
+```
+
+##### 2.8 v-for 循环
+
+   1.key/index 都是可选参数
+   2.在迭代属性输出的之前，v-for会对属性进行升序排序输出
+   3.可以遍历数组，整数
+   4.可以同时添加v-if指令，v-for优先级更高，
+   5.如果使用v-for迭代数字的话，前面的count的值从 1 开始
+   6.在一些特殊情况下，或者v-for有问题，必须使用v-for的同时，指定唯一的字符串/数字 类型的 :key 值       
+
+```javascript
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Hello World</title>
+<script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+  <div v-for="val in object">{{val}}</div>
+  <hr>
+  <div v-for="(val,key) in object" :key='key'>{{key}}:{{val}}</div>
+  <hr>
+   <div v-for="(val,key,index) in object">{{index}},{{key}}:{{val}}</div>
+   <hr>
+   <div v-for="person in persons">name:{{person.name}},age:{{person.age}}</div>
+   <div v-for="person in persons" v-if="person.age >= 23">{{person.name}}</div>
+  
+</div>
+ 
+<script>
+   var vm=new Vue({
+    el:"#app",
+    data:{
+      object:{
+        name:"百度",
+        link:"http://www.baidu.com",
+        slogn:"百度一下，你就知道！"
+      },
+      persons: [
+        {
+          name: 'Dale',
+          age: 22
+        }, 
+        {
+          name: 'Tim',
+          age: 30
+        },
+        {
+          name: 'Rex',
+          age: 23
+        }
+      ]
+    }
+   }) 
+</script>
+	
+
+</body>
+</html>
+```
+
+##### 2.9  v-if 和 v-show
+
+v-if 的特点，每次都会重新删除或者创建元素，但是有较高的切换性能消耗，如果元素涉及频繁的切换，最好不要用v-if，使用v-show。永远不想被看见就用v-if
+
+v-show 的特点  每次不会重新进行DOM 的删除和创建操作，只是切换了元素的display：none样式。但是，有较高的初始渲染消耗
