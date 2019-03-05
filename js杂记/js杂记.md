@@ -230,3 +230,21 @@ window.returnValue="http://...";
 客户端需要写 `window.location.href='/'`
 
 服务端写`res.redircet('./')`无效
+
+#### 6、表单提交密码是‘’小眼睛切换显示密码‘’
+
+```javascript
+//点击小眼睛实现显示密码
+$('.icon_psd').click(function(){	
+	$(this).addClass('text')
+	var a = $('#password').val()
+	$('#password').remove()
+	
+	$('.dl_form_infos').children('.one').eq(1).append(`<input id="password" placeholder="密码" name="password" value='' class="dl_text" type="text">`)
+	$('#password').val(a)
+})
+
+//点击小眼睛实现不显示密码
+
+```
+
