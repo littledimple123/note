@@ -1,3 +1,5 @@
+
+
 #### 1、json对象和字符串互相转换
 
 ```javascript
@@ -248,3 +250,230 @@ $('.icon_psd').click(function(){
 
 ```
 
+#### 7、操作数组的方法集锦
+
+**7.1  ES5**
+
+**删除数组**
+
+1、**delecte**方法，delete删除的只是数组元素的值，所占的空间是并没有删除的 
+
+```javascript
+var arr=[12,23,44,5,6,23,43,34];
+delete arr[1];
+console.log(arr)
+//输出结果是：[12, empty, 44, 5, 6, 23, 43, 34]
+```
+
+2、**splice**方法，该方法删除数组指定的元素，并且可以给数组添加新的元素，即实现**删除/替换**数组的某项元素 
+
+arr.splice(index,length,items,items,...);
+
+注意：如果不添加item的时候，就是数组的删除，会改变原数组的长度
+
+```javascript
+var arr=[12,23,44,5,6,23,43,34];
+arr.splice(1,2);//从下标为1的元素开始删除，删除的长度为2即23，44两个数
+console.log(arr);
+//输出  [12, 5, 6, 23, 43, 34]
+arr.splice(0,1,10)//从下标为0的元素开始替换，替换的长度为1即12替换成10
+//输出  [10, 5, 6, 23, 43, 34]
+```
+
+3、**shift**方法:删除第一个数组元素，不带参数，数组的长度会减1
+
+　　arr.shift();
+
+　　注意:如果数组是空的，那么 shift() 方法将不进行任何操作，返回 undefined 值。请注意，该方法不创建新数组，而是直接修改原有的 arrayObject
+
+```javascript
+var arr=[12,23,44,5,6,23,43,34];
+arr.shift();
+console.log(arr)
+//输出[23,44,5,6,23,43,34];
+```
+
+4、**pop**方法:删除数组的最后一个元素,数组的长度会减1,
+
+ arr.pop();
+
+```javascript
+var arr=['a','b','c','d','e','f'];          
+arr.pop();            
+console.log(arr);
+//输出 ['a','b','c','d','e'];    
+```
+**增加数组**
+
+1、**unshift()**： 方法:在数组的第一个元素前面增加一个元素,数组的长度会加1，该方法会改变原来数组的长度.
+
+arr.unshift(newElement)
+
+```javascript
+var arr = [0,1,2,3];
+arr.unshift(100)
+console.log(arr)
+// [100, 0, 1, 2, 3]
+```
+
+2、**push()**:在数组的结尾追加元素,可以追加多个元素，该方法会改变原来数组的长度　
+
+　　arr.push(newElement,...);
+
+```javascript
+var arr = [0,1,2,3];
+arr.push(100)
+console.log(arr)
+// [ 0, 1, 2, 3, 100]
+```
+
+3、concat():合并两个或多个数组，该方法不会改变现有的数组，而仅仅会返回被连接数组的一个副本 ，原数组不变
+
+```javascript
+var a = [0,1,2]
+var b = [3,4,5]
+var c = a.concat(b)
+console.log(c)
+//输出 [0, 1, 2, 3, 4, 5]
+```
+
+4、sort():该方法是对数组进行升序排序，规则是按ascii表的规则来的
+
+　　arr.sort();
+
+```javascript
+var a = ["d","z","r"]
+a.sort();
+console.log(a)
+//输出 ["d", "r", "z"]
+```
+
+5、reverse():对数组进行翻转操作
+
+　　arr.reverse();
+
+```javascript
+//js模拟原理实现的代码
+var arr = ["诸葛亮","安琪拉","狄仁杰","后羿","荆轲","娜可露露","鲁班"];
+//思路：实现方法：1.操作原数组，让原数组第一位和最后一个位调换位置，以此类推。
+    for(var i=0;i<arr.length/2;i++){
+        //让前后数组中的元素交换位置。
+        var temp = arr[i];
+        //前面项和对应的后面项交换位置。（arr.length-1-i = 倒数第i+1项）
+        arr[i] = arr[arr.length-1-i];
+        arr[arr.length-1-i] = temp;
+    }
+    console.log(arr);
+```
+
+**检查是否为数组**
+
+arr.isArray(obj):该方法适用于确定传递的值是否为Array，是Array返回的则是true，否的话返回的是false 
+
+intanceof 同样也是检测使用的，语法：a instanceof Object    返回的值是true or false;
+
+**其他方法**
+
+**slice()**:从当前数组中截取一个新的数组，不影响原来的数组，参数start从0开始,end从1开始(从第一个元素开始)
+
+　　arr.slice(star,end);
+
+注意：如果slice里面没有定义结束的位置的话，那么截取的元素就从被截取元素的开始位置一直截取到结束位置 
+
+**arr.join()**：把数组转换成为字符串，可以自己定义分隔符 arr.join("自定义分隔符如&")，默认是逗号隔开，如果要没有分隔符的话，就arr.join(""); 
+
+**arr.toString()**:同样是把数组转成字符串，但是返回的字符串每项都是用逗号隔开的 
+
+##### 7.2 ES6 新增加方法
+
+1、**Array.from**方法用于将两类对象转为真正的数组：类似数组的对象（array-like object）和可遍历（iterable）的对象（包括 ES6 新增的数据结构 Set 和 Map） 
+
+```javascript
+let arrayLike = {
+    '0': 'a',
+    '1': 'b',
+    '2': 'c',
+    length: 3
+};
+
+// ES5的写法
+var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
+
+// ES6的写法
+let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+```
+
+2、解构
+
+```javascript
+var a = [1,2,3]
+var b = [4,5,6]
+var c = [...a]+[...b]
+var d = [...a,...b]
+console.log(c) //1,2,34,5,6
+console.log(d) //[1,2,3,4,5,6]
+```
+
+3、**reduce()**方法接收一个函数作为累加器(accumulator),数组中的每个值(从左到右)开始合并,最终为一个值. 
+
+```
+array.reduce(function(total, currentValue, currentIndex, arr), initialValue)
+参数	                描述
+total	              必需。初始值, 或者计算结束后的返回值。
+currentValue	      必需。当前元素
+currentIndex	      可选。当前元素的索引
+arr	                  可选。当前元素所属的数组对象。
+initialValue	      可选。传递给函数的初始值
+```
+
+```javascript
+var arr = [1,2,3,4,5,6]
+arr.reduce((pre,cur)=>{
+	return pre+cur
+})
+//输出21
+```
+
+4、**filter()**方法使用指定的函数测试所有元素,并创建一个包含所有通过测试的元素的新数组.  
+
+```javascript
+var a = [1, 2, 3, 4, 5];
+
+var b = a.filter((item) => {
+    return item > 3;
+});
+//输出[4, 5]
+console.log(b);
+```
+
+5、**every()**方法用于测试数组中所有元素是否**都通过**了指定函数的测试. 
+
+```javascript
+var a = [1, 2, 3, 4, 5];
+var b = a.every((item) => {
+    return item > 0;
+});
+var c = a.every((item) => {
+    return item > 1;
+});
+console.log(b); // true
+console.log(c); // false
+```
+
+6、some()方法用于测试数组中是否**至少有一项元素**通过了指定函数的测试. 
+
+```javascript
+var bb = a.some((item) => {
+    return item > 4;
+});
+
+var cc = a.some((item) => {
+    return item > 5;
+});
+console.log(bb);    // true
+console.log(cc);    // false
+```
+
+7、**forEach()**为每个元素执行对应的方法. 
+
+8、indexOf()方法返回在该数组中第一个找到的元素位置,如果它不存在则返回-1. 
