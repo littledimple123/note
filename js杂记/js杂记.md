@@ -374,7 +374,7 @@ intanceof 同样也是检测使用的，语法：a instanceof Object    返回�
 
 **其他方法**
 
-**slice()**:从当前数组中截取一个新的数组，不影响原来的数组，参数start从0开始,end从1开始(从第一个元素开始)
+**splice()**:从当前数组中截取一个新的数组，不影响原来的数组，参数start从0开始,end从1开始(从第一个元素开始)
 
 　　arr.slice(star,end);
 
@@ -448,6 +448,11 @@ console.log(b);
 
 5、**every()**方法用于测试数组中所有元素是否**都通过**了指定函数的测试. 
 
+- currentValue【必选】：当前元素的值
+- index【可选】当前元素的索引
+- arr【可选】当前元素属于的数组对象
+- 不改变原数组的值
+
 ```javascript
 var a = [1, 2, 3, 4, 5];
 var b = a.every((item) => {
@@ -460,7 +465,11 @@ console.log(b); // true
 console.log(c); // false
 ```
 
-6、some()方法用于测试数组中是否**至少有一项元素**通过了指定函数的测试. 
+6、**some()**方法用于测试数组中是否**至少有一项元素**通过了指定函数的测试. 
+
+参数 item : 数组中正在处理的元素
+
+参数index : 数组中正在处理的元素的下标
 
 ```javascript
 var bb = a.some((item) => {
@@ -479,4 +488,10 @@ console.log(cc);    // false
 8、**indexOf()**方法返回在该数组中第一个找到的元素位置,如果它不存在则返回-1. 
 
 9、**Object.assign()** 方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。 
+
+10、**findIndex()**  当条件为true时findIndex()返回的是索引值 ，否则返回 -1
+
+11、**find()**  当条件为true是 find 返回是该元素，否则返回undefined
+
+12、ES6中字符串的方法**includes()**    
 

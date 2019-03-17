@@ -203,6 +203,8 @@ new Vue({
 
 .once 事件只执行一次
 
+.passive   不能和prevent一起用，因为 `.prevent` 将会被忽略，同时浏览器可能会向你展示一个警告。请记住，`.passive` 会告诉浏览器你*不*想阻止事件的默认行为。 
+
 事件修饰符可以多个一起用
 
 ##### 2.6 v-model 双向数据绑定
@@ -346,3 +348,190 @@ new Vue({
 v-if 的特点，每次都会重新删除或者创建元素，但是有较高的切换性能消耗，如果元素涉及频繁的切换，最好不要用v-if，使用v-show。永远不想被看见就用v-if
 
 v-show 的特点  每次不会重新进行DOM 的删除和创建操作，只是切换了元素的display：none样式。但是，有较高的初始渲染消耗
+
+##### 2.10  过滤器
+
+过滤器可以用在两个地方：**双花括号插值和 v-bind 表达式**  
+
+```javascript
+<!-- 在双花括号中 -->
+{{ message | capitalize }}
+
+<!-- 在 `v-bind` 中 -->
+<div v-bind:id="rawId | formatId"></div>
+```
+
+
+
+过滤器的定义语法
+
+Vue.filter('过滤器名称',function(data){})
+
+过滤器中的function第一个参数固定死，永远都是管道符前面传过来的数据，第二个参数就是过滤器名括号后面的内容。
+
+过滤器可以在实例里面定义，也可以在全局定义(全局定义时必须在new Vue之前)
+
+过滤器调用采用就近原则，如果全局过滤器和私有过滤器重名，优先使用私有过滤器
+
+```javascript
+{{date|newDate }}
+//私有过滤器
+var vm = new Vue({
+    filters: {
+       newDate(data) {                    
+          return data.toLocaleDateString()
+       }
+    }
+})
+
+//全局过滤器  模板字符串，变量编译用 '${}' 来表示
+   Vue.filter('newDate', function(data) {
+        var dd = new Date(data);
+        console.log(dd)
+        var y = dd.getFullYear();
+        var m = dd.getMonth();
+        var d = dd.getDate()
+        return `${y}-${m}-${d}`
+   })
+//function有两个参数的情况   {{date|newDate('yyyy-mm-dd')}}
+ Vue.filter('newDate', function(data, type) {
+            var dd = new Date(data);
+            //console.log(dd)
+            var y = dd.getFullYear();
+            var m = dd.getMonth();
+            var d = dd.getDate()
+            if (type && type.toLowerCase() === 'yyyy-mm-dd') {
+                return `${y}-${m}-${d}`
+            } else {
+                var hh = dd.getHours();
+                var mm = dd.getMinutes();
+                var ss = dd.getSeconds();
+                return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+            }
+        })
+```
+
+
+
+#### 3、表单处理事项
+
+##### 3.1表单事件修饰符
+
+**.lazy  ** `v-model` 在每次 `input` 事件触发后将输入框的值与数据进行同步 ，你可以添加 `lazy` 修饰符，从而转变为使用 `change` 
+
+```javascript
+//在“change”时而非“input”时更新
+<input v-model.lazy="msg" >
+```
+
+**.number**   如果想自动将用户的输入值转为数值类型，可以给 `v-model` 添加 `number` 修饰符： 
+
+这通常很有用，因为即使在 `type="number"` 时，HTML 输入元素的值也总会返回字符串。如果这个值无法被 `parseFloat()` 解析，则会返回原始的值。 
+
+```javascript
+<div id='app'>       
+        <input type='text' v-model.number='num' />
+        <p>{{num}}</p>
+        <button @click="assay()">获取当前的类型</button>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {                
+                num: ''
+            },
+            methods: {
+                assay() {
+                    alert(typeof this.num)
+                }
+            }
+        })
+```
+
+**.trim**  如果要自动过滤用户输入的首尾空白字符，可以给 `v-model` 添加 `trim` 修饰符
+
+##### 3.2 字符串的 padStart()     padEnd()  填充字符串
+
+如果某个字符串不够指定的长度，就在其头部或者尾部补全 
+
+##### 3.3 按键修饰符
+
+.enter
+
+.tab
+
+.delete（捕获“删除”和”退格“键）
+
+.esc
+
+.space
+
+.up
+
+.down
+
+.left
+
+.right
+
+自定义键盘修饰符
+
+```javascript
+//在事件绑定时
+<input type='text' @keyUp.f12='add'/>
+//在全局定义
+Vue.config.keycodes.f12=113
+```
+
+
+
+##### 3.4 系统修饰符
+
+可以用如下修饰符来实现仅在按下相应按键时才触发鼠标或键盘事件的监听器。
+
+- `.ctrl`
+
+- `.alt`
+
+- `.shift`
+
+- `.meta`
+
+  **注意**：在 Mac 系统键盘上，meta 对应 command 键 (⌘)。在 Windows 系统键盘 meta 对应 Windows 徽标键 (⊞)。在 Sun 操作系统键盘上，meta 对应实心宝石键 (◆)。在其他特定键盘上，尤其在 MIT 和 Lisp 机器的键盘、以及其后继产品，比如 Knight 键盘、space-cadet 键盘，meta 被标记为“META”。在 Symbolics 键盘上，meta 被标记为“META”或者“Meta”。 
+
+  #### 4、自定义指令
+
+  在全局使用`Vue.directive()`指令,自定义指令，调用时用`v-`开头
+
+  参数1，指令名称
+
+  参数2，一个对象，对象中每个钩子函数的第一个参数都是el，即被绑定的元素
+
+  具体的参数请见[钩子函数的参数][https://cn.vuejs.org/v2/guide/custom-directive.html]
+
+  ```javascript
+  Vue.directive('fouce'，{
+     //第一次绑定到元素的时候就会立即执行，只执行一次      
+     //和样式相关的操作，一般在bind中执行           
+     bind:function(el){},
+     //被绑定元素插入父节点时调用，就会被执行，执行一次 
+     //和js行为相关的操作，最好在inserted中执行，防止js不生效
+     inserted:function(el){},
+     //所在组件的 VNode 更新时调用，可能执行多次    
+     update:function(el){}    
+   })
+  ```
+
+  私有自定义指令
+
+  ```javascript
+  directives:{
+      focus:{
+          bind:function(el){},
+          inserted:function(el){},
+          update:function(el){}    
+      }
+  }
+  ```
+
+  
