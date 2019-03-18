@@ -75,3 +75,10 @@ add(10, 20, function (a) {
 
 node_modules误删之后，通过`npm update` 恢复
 
+##### vs code 前端如何以服务器模式打开
+
+```
+npm u live-server -g
+```
+
+然后在左下角管理--命令面板--输入live Server:open with live Server

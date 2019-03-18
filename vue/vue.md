@@ -535,3 +535,107 @@ Vue.config.keycodes.f12=113
   ```
 
   
+
+#### 5、生命周期
+
+beforeCreate()   实例被创建出来之前，data和methods 中的数据都还没有初始化
+
+created()   实例被创建出来之后，data和methods 中的数据已经初始化，只是在内存中还没有挂载到真实DOM中
+
+beforeMount()   挂载到dom前 ,模板已经在内存中编译完成了，但是尚未把模板渲染到页面中
+
+mounted()     内存中的模板已经真实的渲染到页面中。如果要操作DOM节点，最早在此进行
+
+运行阶段函数
+
+beforeUpdate()   界面没有被更新，data数据更新了，页面和data数据还未同步
+
+updated()    页面和data数据保持同步了。
+
+销毁阶段
+
+beforeDestroy()
+
+destroyed()
+
+#### 6、vue中发起ajax请求
+
+vue-resonrce实现get，post, jsonp请求。还可以使用  `axios`  第三方包实现数据的请求
+
+实例内部发送请求
+
+请求成功数据是 result.body
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue-resource发送请求</title>
+    <script src='js/vue.js'></script>
+    <script src='https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js'></script>
+</head>
+
+<body>
+    <div id='app'>
+        <input type='button' value='get请求' @click='getInfo' />
+        <ul v-for='list in lists' key='list.id'>
+            <li>{{list.id}}</li>
+            <li>{{list.course_name}}</li>
+            <li>{{list.autor}}</li>
+            <li>{{list.college}}</li>
+            <li>{{list.category_Id}}</li>
+        </ul>
+        <input type='button' value='post请求' @click='postInfo' />
+        <input type='button' value='jsonp请求' @click='jsonpInfo' />
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                dataUrl: 'http://localhost:3000/course',
+                lists: []
+            },
+            methods: {
+                getInfo() {
+                    this.$http.get(this.dataUrl).then(function(result) {
+                        result.body.map((d, i) => {
+                            this.lists.push(d)
+                        })
+
+                    })
+                },
+                postInfo() {
+                    //手动发起的post请求，默认没有表单格式，有的服务器处理不 ，通过post方法的第三个参数，{emulateJSON:true}设置提交内容类型为 普通表单数据格式
+                    this.$http.post(this.dataUrl, {}, {
+                        emulateJSON: true
+                    }).then((result) => {
+                        console.log(result)
+                    })
+                },
+                jsonpInfo() {
+                    this.$http.jsonp(this.dataUrl).then((result) => {
+                        console.log(result.body)
+                    })
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
+```
+
+jsonp实现原理：
+
+- 由于浏览器的安全性限制，不允许ajax访问，协议不同，端口号不同的数据接口，浏览器会认为这种访问不安全
+- 可以通过动态创建script标签的形式，把script标签的src属性，指向数据接口的地址，因为script标签不存在跨域限制，这种数据获取方式，称作jsonp（只支持get请求）
+- 具体实现过程：
+  - 先在客户端定义一个回调方法，预定义对数据的操作
+  - 再把这个回调方法的名称，通过url传参的形式，提交到服务器的数据接口
+  - 服务器数据接口组织好要发送给客户端的数据，再拿着客户端传递过来的回调方法名称，拼接出一个调用这个方法的字符串，发送给客户端去解析执行
+  - 客户端拿到服务器返回的字符串之后，当做script脚本解析执行，这样就能拿到jsonp数据了
+
