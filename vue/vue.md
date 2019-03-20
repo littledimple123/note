@@ -677,5 +677,148 @@ Vue 提供了 `transition` 的封装组件，在下列情形中，可以给任�
 
 **自定义类名**  在组件`transition`添加`name`属性
 
+##### 7.2 在列表添加动画
 
+```jaa
+<transition-group></transition-group>
+```
+
+- 不同于 `<transition>`，它会以一个真实元素呈现：默认为一个 `<span>`。你也可以通过 `tag` 特性更换为其他元素。
+
+v-move  和 v-leave-active 配合使用，可以实现列表后续的元素渐渐的飘上来的效果
+
+给 transition-group 添加appear 属性 实现入场效果
+
+#### 8、组件
+
+##### 8.1  组件命名
+
+如果使用 Vue.component 定义全局组件的时候，组件名使用了驼峰命名，则在引用组件的时候，需要把大写的驼峰改为小写字母，并用`-`连接；如果不使用驼峰，则直接拿名称来使用即可
+
+##### 8.2  全局创建组件
+
+8.2.1使用Vue.extend创建全局组件
+
+```javascript
+var com = Vue.entend({
+    template:"<p>这是一个p标签</p>"
+})
+
+Vue.component("mycom1",com)
+```
+
+8.2.2  这种方式在template中写html时没有提示
+
+```javascript
+Vue.component('mycom2',{
+    template:"<h1>这是一个h1标签</h1>"
+})
+```
+
+8.2.3这种方式在template中写html时有提示
+
+```htm
+//在被控制的元素之外，使用template元素，定义组件的HTML模板组件
+<template id='tem'>
+	<h1>这是一个H1标签</h1>
+</template>
+```
+
+注意：模板中template只能有一个根标签
+
+##### 8.3私有创建组件
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件创建</title>
+    <script src='js/vue.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <mycom4></mycom4>
+    </div>
+    <!-- 在被绑定元素之外写template模板 -->
+    <template id='tpl'>
+      <div>
+          <h3>1111</h3>
+          <h3>1111</h3>
+          <h3>1111</h3> 
+      </div>
+      
+    </template>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {},
+            methods: {},
+            components: {
+                mycom4: {
+                    template: '#tpl'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
+##### 8.4模板中的data和methods
+
+```javascript
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Hello World</title>
+    <script src="js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app-one">
+        <greet></greet>
+    </div>
+
+    <script>       
+        //组件中的data必须是一个function.返回一个对象，并且使用方法和实例中的data一样
+        Vue.component('greet', {
+            //template
+            template: `
+        <div>
+          <p>{{name}}hello world</p>
+          <button v-on:click="change">点击改变文字</button>
+        </div>
+      `,
+            data: function() {
+                return {
+                    name: "111"
+                }
+            },
+            methods: {
+                change: function() {
+                    this.name = "222"
+                }
+            }
+        })
+        new Vue({
+            el: "#app-one",
+            data: {},
+            methods: {}
+
+        });
+    </script>
+
+
+</body>
+
+</html>
+```
 

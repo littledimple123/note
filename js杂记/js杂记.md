@@ -495,3 +495,46 @@ console.log(cc);    // false
 
 12、ES6中字符串的方法**includes()**    
 
+#### 8、css动画
+
+8.1过渡transition
+
+```javascript
+transition
+```
+
+| [transition](http://www.w3school.com.cn/cssref/pr_transition.asp) | 简写属性，用于在一个属性中设置四个过渡属性。 | 3    |
+| ------------------------------------------------------------ | -------------------------------------------- | ---- |
+| [transition-property](http://www.w3school.com.cn/cssref/pr_transition-property.asp) | 规定应用过渡的 CSS 属性的名称。              | 3    |
+| [transition-duration](http://www.w3school.com.cn/cssref/pr_transition-duration.asp) | 定义过渡效果花费的时间。默认是 0。           | 3    |
+| [transition-timing-function](http://www.w3school.com.cn/cssref/pr_transition-timing-function.asp) | 规定过渡效果的时间曲线。默认是 "ease"。      | 3    |
+| [transition-delay](http://www.w3school.com.cn/cssref/pr_transition-delay.asp) | 规定过渡效果何时开始。默认是 0。             |      |
+
+默认 ease ：慢速开始，中间变快，慢速结束；相当于 cubic-bezier(0.25, 0.1, 0.25, 1)。
+
+可选 liner：匀速运动；相当于 cubic-bezier(0, 0, 1, 1)。
+
+可选 ease-in：慢速开始；相当于 cubic-bezier(0.42, 0, 1, 1)。
+
+可选 ease-out：慢速结束；相当于 cubic-bezier(0, 0, 0.58, 1)
+
+可选 ease-in-out：慢速开始，慢速结束；相当于 cubic-bezier(0.42, 0, 0.58, 1)
+
+可选 cubic-bezier(n, n, n, n)：在 bezier 函数中自定义 0 ~ 1 之间的数值。
+
+
+
+8.2转换transform
+
+2D转换
+
+- translate()  位移
+- rotate()   旋转
+- scale()   缩放
+- skew()    翻转
+- matrix()   所有2D转换集合（6个参数）
+
+3D转换
+
+- rotateX()
+- rotateY()
