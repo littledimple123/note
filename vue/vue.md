@@ -722,6 +722,10 @@ Vue.component('mycom2',{
 <template id='tem'>
 	<h1>这是一个H1标签</h1>
 </template>
+//js中
+Vue.component('mycom',{
+    template:"#tem"
+})
 ```
 
 注意：模板中template只能有一个根标签
@@ -820,5 +824,63 @@ Vue.component('mycom2',{
 </body>
 
 </html>
+```
+
+##### 8.5父组件->子组件传值
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件传值</title>
+    <script src='js/vue.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <parent></parent>
+
+    </div>
+    <script>
+        //父组件，在引用子组件的时候，通过绑定（v-bind:）的形式，把需要传递给子组件的数据，以属性绑定的形式，传递到子组件内部，供子组件使用
+        Vue.component('parent', {
+                template: "<child :parentmsg='msg'></child>",
+                data: function() {
+                    return {
+                        msg: "父组件内容"
+                    }
+                },
+
+            })
+            //子组件把父组件传递过来的属性，先在props数组中定义一下，才能使用这个数据。子组件中的所有props中的数据都是通过父组件传递给子组件的
+            // data是可读写的，props 是只读的
+        Vue.component('child', {
+            template: "<h1>11111---{{parentmsg}} ---{{childmsg}}</h1>",
+            props: ['parentmsg'],
+            data: function() {
+                return {
+                    childmsg: "子组件内容"
+                }
+            }
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {},
+            methods: {}
+        })
+    </script>
+</body>
+
+</html>
+```
+
+##### 8.6子组件-》父组件传值
+
+```javascript
+
 ```
 
