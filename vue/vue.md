@@ -880,7 +880,71 @@ Vue.component('mycom',{
 
 ##### 8.6子组件-》父组件传值
 
-```javascript
+通过事件绑定传递 this.$emit()
 
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>子-父传值</title>
+    <script src='js/vue.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <com @func="show"></com>
+    </div>
+    <template id='tmp'>
+      <div>
+        <h1>这是子组件</h1>
+        <input type="button" value='这是子组件的按钮，触发父组件事件' @click='kkk'>
+      </div>
+    </template>
+    <script>
+        //子组件
+        var com = {
+            template: "#tmp",
+            data() {
+                return {
+                    msg: "这是子组件的data内容"
+                }
+            },
+            methods: {
+                kkk() {
+                    this.$emit('func', this.msg)
+                }
+            }
+        }
+
+        var vm = new Vue({
+            el: '#app',
+            data: {},
+            methods: {
+                show(data) {
+                    console.log('子组件已经成功调用了父组件的事件方法--' + data)
+                }
+            },
+            components: {
+                com
+            }
+        })
+    </script>
+</body>
+
+</html>
 ```
+
+#### 9.通过ref获取DOM元素和组件引用
+
+给元素或者组价添加`ref`属性，然后通过`this.$refs`来获取 
+
+#### 10、路由
+
+后端路由：对于普通网页，所有的超链接都是url地址，所有的url地址都对应服务器上对应的资源
+
+前端路由：对于单页面应用程序来说，主要通过url中的hash来实现不同页面之间的切换，同时，hash有一个特点，HTTP请求中不会包含hash相关的内容，所以，单页面程序中的页面跳转主要用hash实现
 
