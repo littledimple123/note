@@ -948,3 +948,216 @@ Vue.component('mycom',{
 
 前端路由：对于单页面应用程序来说，主要通过url中的hash来实现不同页面之间的切换，同时，hash有一个特点，HTTP请求中不会包含hash相关的内容，所以，单页面程序中的页面跳转主要用hash实现
 
+   1.引入 vue-router 的js文件
+
+2. 创建组件构造器或者组件配置对象
+3. 定义路由
+4. 创建router实例 new VueRouter
+5. 与vue实例连接  通过 router属性
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>路由</title>
+    <script src='js/vue.js'></script>
+    <!-- 1、引入vue-router.js -->
+    <script src='js/vue-router.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <!--由于是通过hash实现的，所以 href前面要加上#-->
+        <!-- <a href="#/login">登录</a>
+        <a href='#/register'>注册</a> -->
+        <!-- <router-link> 默认是 a 标签，可以通过tag 改变展示的标签-->
+        <router-link to='/login' tag='span'>登录</router-link>
+        <router-link to='/register'>注册</router-link>
+        <router-view></router-view>
+    </div>
+    <script>
+        var login = {
+            template: "<h1>登录</h1>"
+        }
+        var register = {
+            template: "<h1>注册</h1>"
+        }
+
+        //2、定义路由 component组件 可以是Vue.extend() 创建的组件构造器，
+        // 或者，只是一个组件配置对象。
+        var routers = [{
+                path: '/login',
+                component: login
+            }, {
+                path: '/register',
+                component: register
+            }]
+            //3、创建router实例
+        var routerobj = new VueRouter({
+                routes: routers
+            })
+            //通过 router 属性是路由与 实例连接
+        var vm = new Vue({
+            el: '#app',
+            data: {},
+            methods: {},
+            router: routerobj
+        })
+    </script>
+</body>
+
+</html>
+```
+
+**重定向**
+
+`redirect`
+
+```javascript
+ var routerobj = new VueRouter({
+            routes: [{
+                path: "/",
+                redirect: "/login"
+            }, {
+                path: '/login',
+                component: login
+            }, {
+                path: '/register',
+                component: register
+            }]
+        })
+```
+
+**组件嵌套**
+
+`children`
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件嵌套</title>
+    <script src='js/vue.js'></script>
+    <script src='js/vue-router.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-link to='/account'>account</router-link>
+        <router-view></router-view>
+    </div>
+
+    <template id='tmp'>
+        <div>
+          <h1>account组件</h1>
+          <router-link to='/account/login'>登录</router-link>
+          <router-link to='/account/register'>注册</router-link>
+          <router-view></router-view>
+        </div>
+    </template>
+    <script>
+        var acc = {
+            template: "#tmp"
+        }
+        var login = {
+            template: "<h2>登录组件</h2>"
+        }
+        var register = {
+            template: "<h2>注册组件</h2>"
+        }
+        var router = new VueRouter({
+            routes: [{
+                path: "/account",
+                component: acc,
+                children: [{
+                        path: "login",
+                        component: login
+                    }, {
+                        path: 'register',
+                        component: register
+                    }
+
+                ]
+            }]
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {},
+            methods: {},
+            router
+        })
+    </script>
+</body>
+
+</html>
+```
+
+##### 传值
+
+使用query传参，不需要修改路由匹配规则
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>路由传参</title>
+    <script src='js/vue.js'></script>
+    <script src='js/vue-router.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-link to='/login?id=10&name=zs'>登录</router-link>
+        <router-link to='/register'>注册</router-link>
+        <router-view></router-view>
+    </div>
+    <script>
+        var login = {
+            template: "<h1>登录--{{msg}}--{{$route.query.id}}--{{$route.query.name}}</h1>",
+            data() {
+                return {
+                    msg: "111"
+                }
+            },
+            created() {
+                console.log(this.$route.query)
+            }
+        }
+        var register = {
+            template: "<h1>注册</h1>"
+        }
+        var router = new VueRouter({
+            routes: [{
+                path: '/login',
+                component: login
+            }, {
+                path: '/register',
+                component: register
+            }]
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {},
+            methods: {
+
+            },
+            router
+        })
+    </script>
+</body>
+
+</html>
+```
+
