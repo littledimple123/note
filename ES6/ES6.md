@@ -98,3 +98,129 @@ var arr=[1,2,3]
 console.log(arr)
 ```
 
+#### 解构赋值
+
+两边结构必须一致
+
+声明和赋值不能分开，必须在一句话里
+
+#### 数组
+
+map()     
+
+reduce()
+
+filter()
+
+forEach()
+
+`Array.from`方法用于将两类对象转为真正的数组 
+
+`Array.of`方法用于将一组值，转换为数组。 
+
+数组实例的`copyWithin`方法，在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组 
+
+#### 字符串
+
+- **startsWith()**：返回布尔值，表示参数字符串是否在原字符串的头部。
+- **endsWith()**：返回布尔值，表示参数字符串是否在原字符串的尾部。
+
+#### 面向对象
+
+1. class关键字，constructor构造器和类分开
+2. class里面直接加方法
+
+```javascript
+<script>
+        class Person {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age
+            }
+            sayName() {
+                alert(this.name)
+            }
+            sayAge() {
+                alert(this.age)
+            }
+        }
+
+        var zs = new Person('张三', '20')
+        zs.sayAge()
+        zs.sayName()
+    </script>
+```
+
+3.继承
+
+extends   扩展的意思
+
+super    超类=父类
+
+```javascript
+<script>
+        class Person {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age
+            }
+            sayName() {
+                console.log(this.name)
+            }
+            sayAge() {
+                console.log(this.age)
+            }
+        }
+
+
+        class Sonperson extends Person {
+            constructor(name, age, sex) {
+                super(name, age)
+                this.sex = sex
+            }
+            showSex() {
+                console.log(this.sex)
+            }
+        }
+        var p1 = new Sonperson("张三", 50, '男')
+        p1.sayName()
+        p1.sayAge()
+        p1.showSex()
+    </script>
+```
+
+#### json
+
+JSON.stringify()  把json转为字符串
+
+JSON.parse()   把字符串转为json
+
+注意 ：json的标准写法
+
+1.字符串和Object的键必须是双引号`""`
+
+2.名字和值一样可以简写，写一个
+
+```javascript
+let a = 5;
+let b = 6;
+let json = {a,b}
+console.log(json)
+```
+
+#### Promise---承诺
+
+Promise 是异步编程的一种解决方案 
+
+Promise.all()    全部请求成功才可以
+
+```javascript
+Promise.all( $.ajax() ，$.ajax()).then(result=>{
+    console.log("成功了" + result)
+},error=>{
+    console.log("失败了" + err)
+})
+```
+
+Promise.race()   至少一个请求成功就可以
+
