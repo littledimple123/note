@@ -1255,3 +1255,71 @@ module: {
 
 
 
+#### 另外一种写法：css样式引入loader
+
+.css  文件   `npm i style-loader css-loader -D`
+
+.less文件   `npm i less-loader -D`
+
+.scss文件   `npm i sass-loader -D`
+
+在css中background中添加背景图片时  `npm i url-loader file-loader -D`
+
+在webpack.config.js中的`module`中添加
+
+```javascript
+module:[
+    rules:[
+    {test:/\.(jpg|png|gif|bmp|jpeg)$/,use:'url-loader'}
+    ]
+]
+]
+```
+
+**其中：**
+
+`use:'url-loader?limit=7631'`   limit 给定的值是图片的大小，单位是byte，当图片的大小大于或等于该值时，不会被转义为base64的字符串。如果图片小于给定的值，则会被转为base64的字符串
+
+`use:'url-loader?limit=7631&name=[hash:8]-[name].[ext]'`   图片的名字要是直接显示，不变成hash值，如果重名就需要这样配置
+
+**注意：在main.js中，如果要通过路径的形式，去引入node_module中相关的文件，可以直接省略路径前面的node_modules这一层目录，直接写包的名称，然后在后面跟上具体文件的路径**
+
+**处理字体文件的loader**
+
+```javascript
+module:[
+    rules:[
+    {test:/\.(ttf|eot|svg|woff|woff2)$/,use:'url-loader'}
+    ]
+]
+]
+```
+
+#### babel可以将js高级语法(ES6,ES7等)转换为低级语法
+
+1.安装Babel相关的loader功能
+
+​    1.1 `npm i babel-core babel-loader babel-plugin-transform-runtime -D`
+
+​     1.2`npm i babel-preset-env babel-preset-satge-0 -D`
+
+2.在webpack的配置文件中，module节点下的rules数组中添加匹配规则
+
+`{test:/\.js/,use:"babel-loader",exclude:/node_modules/}`
+
+在配置babel的loader规则的时候，必须把node_modules目录去掉。原因如下：
+
+​     2.1 不排除，则babel会把node_modules中所有的第三方js文件都打包编译，这样会消耗cpu，同时，打包非常慢
+      2.2 即使转换全部转换完，项目也无法正常运行
+
+3. 在项目根目录新建一个`.babelrc`的babel配置文件，属于json格式
+
+   ```javascript
+   {
+     "presets":["env","stage-0"],
+     "plugins":["transform-runtime"]
+   }
+   ```
+
+   
+

@@ -538,3 +538,26 @@ transition
 
 - rotateX()
 - rotateY()
+
+#### call()  apply()    bind()
+
+相同：都用来改变this指向
+不同：
+
+call()  ：第一个参数是this要指向的对象，后面传入的是参数列表，参数可以是任意类型，当第一个参数为null、undefined的时候，默认指向window；改过this的指向后，会再执行函数
+
+apply()：第一个参数是this要指向的对象，第二个参数是数组，改过this的指向后，会再执行函数
+
+bind()  :改过this后，不执行函数，会返回一个绑定新this的函数
+
+```javascript
+function f(){
+console.log("看我怎么被调用");
+console.log(this) //指向this
+}
+var obj = {};
+f.call(obj) //直接调用函数
+var g = f.bind(obj); //bind()不能调用函数
+g();  //此时才调用函数
+```
+
