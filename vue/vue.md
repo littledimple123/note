@@ -1161,3 +1161,233 @@ Vue.component('mycom',{
 </html>
 ```
 
+params传值
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>路由传参</title>
+    <script src='js/vue.js'></script>
+    <script src='js/vue-router.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-link to='/login/10/zhangsan'>登录</router-link>
+        <router-link to='/register'>注册</router-link>
+        <router-view></router-view>
+
+    </div>
+    <script>
+        var login = {
+            template: "<h1>登录--{{msg}}--路由id为{{$route.params.id}}name为--{{$route.params.name}}</h1>",
+            data() {
+                return {
+                    msg: "111"
+                }
+            },
+            created() {
+                console.log(this.$route.params)
+            }
+        }
+        var register = {
+            template: "<h1>注册</h1>",
+
+        }
+        var router = new VueRouter({
+            routes: [{
+                path: "/login/:id/:name",
+                component: login
+            }, {
+                path: "/register",
+                component: register
+            }]
+        })
+
+        var vm = new Vue({
+            el: "#app",
+            data: {},
+            methods: {},
+            router
+        })
+    </script>
+</body>
+
+</html>
+```
+
+命名视图
+
+给`<router-view></router-view>`添加name属性
+
+匹配规则中`components`添加匹配设置
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src='js/vue.js'></script>
+    <script src='js/vue-router.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <router-view></router-view>
+        <router-view name='left'></router-view>
+        <router-view name='right'></router-view>
+    </div>
+    <script>
+        var header = {
+            template: "<h1>这是头部</h1>"
+        }
+        var leftcontent = {
+            template: "<h2>左侧 部分</h2>"
+        }
+        var rightcontent = {
+            template: "<h2>这是右侧部分</h2>"
+        }
+        var router = new VueRouter({
+            routes: [{
+                path: "/",
+                components: {
+                    default: header,
+                    left: leftcontent,
+                    right: rightcontent
+
+                }
+            }]
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {},
+            methods: {},
+            router
+        })
+    </script>
+</body>
+
+</html>
+```
+
+#### watch，使用这个属性，可以监视data中指定数据的变化，然后触发这个watch中对应的处理函数
+
+watch里面函数有两个参数，`(newVal,oldVal)`
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src='js/vue.js'></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model='firstinput'>+
+        <input type="text" v-model='secondinput'>=
+        <input type="text" v-model='fullinput'>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                firstinput: "",
+                secondinput: "",
+                fullinput: ""
+            },
+            methods: {},
+            watch: { //使用这个属性，可以监视data中指定数据的变化，然后触发这个watch中对应的函数
+                firstinput(newVal, oldVal) {
+                    this.fullinput = newVal + "--" + this.secondinput
+                },
+                secondinput(newVal, oldVal) {
+                    this.fullinput = this.firstinput + "--" + newVal
+                },
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
+watch比keyup事件的优势是，可以监听虚拟事件变化，比如路由的变化
+
+```javascript
+var vm = new Vue({
+            el: '#app',
+            data: {},
+            methods: {},
+            router: routerobj,
+            watch: {
+                '$route.path': function(newVal, oldVal) {
+                    console.log(newVal + "--" + oldVal)
+                }
+            }
+        })
+```
+
+#### computed计算属性
+
+在computed中，可以定义一些属性，这些属性就是计算属性，本质就是一个方法，在使用这些计算属性的时候，把它的名字直接当做属性来使用，并不会把计算属性当做方法调用。
+
+计算属性，这个function内部，所用到的任何data中数据发生了变化，就会立即重新计算
+
+计算属性的求值结果会被缓存起来，方便下次直接使用。如果没有任何变化，则不会重新对计算属性求值
+
+必须return 
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src='js/vue.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model='firstinput'>+
+        <input type="text" v-model='secondinput'>=
+        <input type="text" v-model='fullinput'>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                firstinput: "",
+                secondinput: ""
+
+            },
+            methods: {},
+            computed: {
+                'fullinput': function() {
+                    return this.firstinput + "--" + this.secondinput
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
