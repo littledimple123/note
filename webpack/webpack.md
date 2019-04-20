@@ -1268,12 +1268,12 @@ module: {
 在webpack.config.js中的`module`中添加
 
 ```javascript
-module:[
+module:{
     rules:[
     {test:/\.(jpg|png|gif|bmp|jpeg)$/,use:'url-loader'}
     ]
-]
-]
+
+}
 ```
 
 **其中：**
@@ -1301,7 +1301,7 @@ module:[
 
 ​    1.1 `npm i babel-core babel-loader babel-plugin-transform-runtime -D`
 
-​     1.2`npm i babel-preset-env babel-preset-satge-0 -D`
+​     1.2`npm i babel-preset-env babel-preset-stage-0 -D`
 
 2.在webpack的配置文件中，module节点下的rules数组中添加匹配规则
 
@@ -1321,5 +1321,34 @@ module:[
    }
    ```
 
-   
 
+#### webpack中vue
+
+```javascript
+//main.js
+import Vue from 'vue'
+```
+
+```javascript
+//webpack.config.js
+resolve: {
+   alias: {
+      "vue$": "vue/dist/vue.js"
+ 	}
+ }
+```
+
+打包`.vue`文件
+
+```javascript
+//安装loader
+npm i vue-loader vue-template-compiler -D
+```
+
+配置文件
+
+```javascript
+{test:/\.vue$/,use:'vue-loader'}
+```
+
+在webpack中用vue把一个组件渲染到页面，用render实现

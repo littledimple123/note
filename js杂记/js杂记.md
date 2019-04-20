@@ -561,3 +561,53 @@ var g = f.bind(obj); //bind()不能调用函数
 g();  //此时才调用函数
 ```
 
+#### settimeout()在IE8下参数无效的问题
+
+ setTimeout()接受一个字符串参数时,它执行于全局作用域,也就是说,它位于任何函数之外.最简单的修复手段就是使用一个局部函数(匿名函数)来解决这个问题 
+
+```javascript
+<script>
+        function getNum(i) {
+            console.log(i)
+        }
+        for (i = 0; i < 5; i++) {
+            (function(i) {
+                setTimeout(function() {
+                    getNum(i)
+                }, i * 1000)
+
+            })(i)
+
+        }
+    </script>
+```
+
+#### 函数声明以及调用顺序
+
+```javascript
+ <script>
+        var text = "ttt"
+
+        function say() {
+
+            var text; //undefined
+            fn();
+            //表达式函数定义必须先于调用
+            var fn = function() {
+                    alert("表达式函数")
+                }
+                //声明式函数会在所有的输出前执行，且不论位置在哪。（即声明函数会执行在文档的最前面）
+                //然后alert输出及表达式型函数按顺序执行，由于函数 名相同被结果被覆盖，且声明型函数不会再次执行
+            function fn() {
+                alert("声明式函数")
+            }
+            alert(text)
+            fn()
+        }
+        say()
+
+//输出结果   alert("声明式函数")
+            alert(text)//undefined
+            alert("表达式函数")
+```
+
