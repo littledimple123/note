@@ -582,7 +582,7 @@ g();  //此时才调用函数
     </script>
 ```
 
-#### 函数声明以及调用顺序
+#### 9、函数声明以及调用顺序
 
 ```javascript
  <script>
@@ -610,4 +610,38 @@ g();  //此时才调用函数
             alert(text)//undefined
             alert("表达式函数")
 ```
+
+#### 10、函数声明
+
+```javascript
+for (var i = 0; i < 10; i++) {
+    setTimeout(function() { console.log(i); }, 100 * i);
+}
+//会输出   10个10
+```
+
+上面原因分析：var存在变量提升的情况，  setTimeout在若干毫秒后执行一个函数，并且是在for循环结束后。 for循环结束后，i的值为10。 所以当函数被调用的时候，它会打印出 10！
+
+解决方法之一：匿名函数自调
+
+```javascript
+for(var i = 0;i<10; i++){
+    (function(i){
+        setTimeout(function(){console.log(i)},100*i)
+    })(i)
+}
+
+//输出 0,1,2,3,4,5,6,7,8,9
+```
+
+解决方法之二：let声明
+
+```javascript
+for(let i =0; i<10;i++){
+    setTimeout(function(){console.log(i)},100*i)
+}
+//输出 0,1,2,3,4,5,6,7,8,9
+```
+
+
 
