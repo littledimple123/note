@@ -203,7 +203,7 @@ new Vue({
 
 .once 事件只执行一次
 
-.passive   不能和prevent一起用，因为 `.prevent` 将会被忽略，同时浏览器可能会向你展示一个警告。请记住，`.passive` 会告诉浏览器你*不*想阻止事件的默认行为。 
+.passive   不能和prevent一起用，因为 `.prevent` 将会被忽略，同时浏览器可能会向你展示一个警告。请记住，`.passive` 会告诉浏览器你*不*想阻止事件的默认行为。 
 
 事件修饰符可以多个一起用
 
@@ -351,7 +351,7 @@ v-show 的特点  每次不会重新进行DOM 的删除和创建操作，只是�
 
 ##### 2.10  过滤器
 
-过滤器可以用在两个地方：**双花括号插值和 v-bind 表达式**  
+过滤器可以用在两个地方：**双花括号插值和 v-bind 表达式**  
 
 ```javascript
 <!-- 在双花括号中 -->
@@ -417,16 +417,16 @@ var vm = new Vue({
 
 ##### 3.1表单事件修饰符
 
-**.lazy  ** `v-model` 在每次 `input` 事件触发后将输入框的值与数据进行同步 ，你可以添加 `lazy` 修饰符，从而转变为使用 `change` 
+**.lazy  ** `v-model` 在每次 `input` 事件触发后将输入框的值与数据进行同步 ，你可以添加 `lazy` 修饰符，从而转变为使用 `change` 
 
 ```javascript
 //在“change”时而非“input”时更新
 <input v-model.lazy="msg" >
 ```
 
-**.number**   如果想自动将用户的输入值转为数值类型，可以给 `v-model` 添加 `number` 修饰符： 
+**.number**   如果想自动将用户的输入值转为数值类型，可以给 `v-model` 添加 `number` 修饰符： 
 
-这通常很有用，因为即使在 `type="number"` 时，HTML 输入元素的值也总会返回字符串。如果这个值无法被 `parseFloat()` 解析，则会返回原始的值。 
+这通常很有用，因为即使在 `type="number"` 时，HTML 输入元素的值也总会返回字符串。如果这个值无法被 `parseFloat()` 解析，则会返回原始的值。 
 
 ```javascript
 <div id='app'>       
@@ -448,7 +448,7 @@ var vm = new Vue({
         })
 ```
 
-**.trim**  如果要自动过滤用户输入的首尾空白字符，可以给 `v-model` 添加 `trim` 修饰符
+**.trim**  如果要自动过滤用户输入的首尾空白字符，可以给 `v-model` 添加 `trim` 修饰符
 
 ##### 3.2 字符串的 padStart()     padEnd()  填充字符串
 
@@ -1389,5 +1389,29 @@ var vm = new Vue({
 </body>
 
 </html>
+```
+
+#### vue 循环之后动态单独添加class
+
+```javascript
+<tempalte>
+    <ul>
+       <li v-for = '(item,index) in tableData5' :key='index' :class="{active:index==aaa}" @click.stop='onClickTable(item,index)'><i class='el-icon-tickets'></i><span>{{item}}</span>	   </li>
+    </ul>
+</template>
+
+<script>
+ export default {
+	 data() { 
+        return {          
+          aaa:0
+        }
+  	},
+     onClickTable(e,i){      
+        this.aaa = i
+     }
+      
+}
+</script>           
 ```
 
