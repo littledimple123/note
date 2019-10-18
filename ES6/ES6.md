@@ -288,7 +288,66 @@ p1.sex='男'
 console.log(p1.sex)
 ```
 
-#### 
+#### 文件的导出与导入
+
+文件导出和导入有两种方式：
+
+```
+（1）export default (默认导出)一个模块里面只能有一个默认导出
+导出：
+const apikey="123key";
+export default apikey;
+导入：
+import 任意名 from '文件路径'
+(2)命名导出
+const apikey="123key";
+const name="Marray";
+function greet(name){
+	console.log(name)
+}
+export {apikey，name，greet}  
+//这种方式导出的模块引入的时候必须是这个名称
+import {apikey，name,greet} from '路径'
+
+注：导出和引入模块的时候都可以使用别名，
+如export {apikey as key,name,greet};
+当我们引入模块的时候必须使用别名
+import {key，name,greet} from '路径'
+```
+
+#### 兄弟组件之间传值
+
+假如A页面向兄弟组件B页面传值
+
+1、声明bus.js
+
+```
+import Vue from 'vue'
+const bus = new Vue()
+export default bus
+```
+
+2、A页面
+
+```
+import Bus from '文件路径'
+...
+mounted(){
+    Bus.$emit('aaa','111')
+}
+```
+
+3、B页面
+
+```
+import Bus from '文件路径'
+...
+created(){
+    Bus.$on('aaa',data => {
+        console.log(data)
+    })
+}
+```
 
 
 
