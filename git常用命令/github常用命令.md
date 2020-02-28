@@ -250,5 +250,20 @@ vim编辑器
 5.如果想让文本显示行号.就在命令行模式（假如在编辑区，按esc）下,在文本最后输入":set nu"命令
 ```
 
+## 创建标签
+
+```
+// 创建标签名
+git tag <name> 
+// 查看所有标签
+git tag
+// push到远程仓库
+git push --tags
+// push到远程仓库之后，切换tag查看内容
+git checkout <name>
+// 注意每写一个tag时要回退到原始版本、
+git reset --hard <版本序列号>
+```
+
 
 
